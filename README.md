@@ -5,7 +5,7 @@ Add script to your project
 <script src="exConfirm.js"></script>
 
 call the function to get confirmation
-
+``
 Default Options
 {
     bodyBackground: "rgba(255,255,255,1)",
@@ -27,4 +27,4 @@ var configOpt = {
 exConfirmPromise.make(configOpt).then(function (userOption) {
   alert(userOption);
 });
-
+``
