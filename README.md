@@ -17,7 +17,9 @@ Default Options
     top: "25%", //String [px, %]
     right: "38%", //String [px, %]
     btnClassSuccess: "btn btn-success btn-sm", //String
+    btnClassSuccessText: "Yes", //String
     btnClassFail: "btn btn-danger btn-sm", //String
+    btnClassFailText: "No", //String
     title: "Confirmation", //String
     message: "Confirmation Required!" //String
 }
