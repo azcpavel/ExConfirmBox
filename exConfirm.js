@@ -1,4 +1,4 @@
-﻿/*
+/*
 * @author Ahsan Zahid Chowdhury <itszahid.info>
 * @since 12th September 2018
 * @abstract To enable custom promise confirmbox
