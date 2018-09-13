@@ -18,7 +18,9 @@ let exConfirmPromise = {
             top: "25%", //String [px, %]
             right: "38%", //String [px, %]
             btnClassSuccess: "btn btn-success btn-sm", //String
+            btnClassSuccessText: "Yes", //String
             btnClassFail: "btn btn-danger btn-sm", //String
+            btnClassFailText: "No", //String
             title: "Confirmation", //String
             message: "Confirmation Required!" //String
         };
@@ -55,7 +57,7 @@ let exConfirmPromise = {
         exResolveBtn.setAttribute("style", "width: 62px;");
         exResolveBtn.setAttribute("class", options.btnClassSuccess);
         exResolveBtn.setAttribute("autofocus","");
-        exResolveBtn.innerHTML="Yes";
+        exResolveBtn.innerHTML=options.btnClassSuccessText;
         exResolveBtn.addEventListener("click",(event) =>{
             exConfirmPromise.resolve();
         });
@@ -65,7 +67,7 @@ let exConfirmPromise = {
         let exRejectBtn = document.createElement("button");
         exRejectBtn.setAttribute("style", "width: 62px;");
         exRejectBtn.setAttribute("class", options.btnClassFail);
-        exRejectBtn.innerHTML="No";
+        exRejectBtn.innerHTML=options.btnClassFailText;
         exRejectBtn.addEventListener("click",(event) =>{
             exConfirmPromise.reject();
         });
