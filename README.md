@@ -8,7 +8,8 @@ call the function to get confirmation
 ```
 Default Options
 {
-    overlayBackground : "rgba(255,255,255,0)", //String [HEX, RGB, RGBA]
+    zIndex: 9999, //Integer
+    overlayBackground: "rgba(255,255,255,0)", //String [HEX, RGB, RGBA]
     bodyBackground: "rgba(255,255,255,1)", //String [HEX, RGB, RGBA]
     titleBackground: "rgba(66, 139, 202, 1)", //String [HEX, RGB, RGBA]
     textColor: "#000000", //String [HEX, RGB, RGBA]
@@ -21,7 +22,9 @@ Default Options
     btnClassFail: "btn btn-danger btn-sm", //String
     btnClassFailText: "No", //String
     title: "Confirmation", //String
-    message: "Confirmation Required!" //String
+    message: "Confirmation Required!", //String
+    animation: true, //Bool
+    animationTime: 500 //Integer
 }
 
 var configOpt = {
