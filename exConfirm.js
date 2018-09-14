@@ -70,7 +70,20 @@ let exConfirmPromise = {
         // space between the buttons
         let exBtnDivSpace = document.createTextNode(" ");
 
+        let exResolveBtn = document.createElement("button");
+        exResolveBtn.setAttribute("id", "exConfirmPromiseBtnYes");
+        exResolveBtn.setAttribute("style", "width: 62px;");
+        exResolveBtn.setAttribute("class", options.btnClassSuccess);
+        exResolveBtn.setAttribute("autofocus", "");
+        exResolveBtn.innerHTML = options.btnClassSuccessText;
+        exResolveBtn.addEventListener("click", (event) => {
+            exConfirmPromise.resolve();
+        });
+        // space between the buttons
+        let exBtnDivSpace = document.createTextNode(" ");
+
         let exRejectBtn = document.createElement("button");
+        exRejectBtn.setAttribute("id", "exConfirmPromiseBtnNo");
         exRejectBtn.setAttribute("style", "width: 62px;");
         exRejectBtn.setAttribute("class", options.btnClassFail);
         exRejectBtn.innerHTML = options.btnClassFailText;
@@ -87,6 +100,7 @@ let exConfirmPromise = {
         document.querySelector("#exConfirmPromiseBtnWrap").appendChild(exResolveBtn);
         document.querySelector("#exConfirmPromiseBtnWrap").appendChild(exBtnDivSpace);
         document.querySelector("#exConfirmPromiseBtnWrap").appendChild(exRejectBtn);
+        document.querySelector("#exConfirmPromiseBtnYes").focus();
         if (options.animation) {
             document.querySelector("#exConfirmPromiseWrap").style.display = "none";
             this.fadeIn(document.querySelector('#exConfirmPromiseWrap'), options.animationTime);
