@@ -60,17 +60,6 @@ let exConfirmPromise = {
                    '</div>';
         // prepare button with click function
         let exResolveBtn = document.createElement("button");
-        exResolveBtn.setAttribute("style", "width: 62px;");
-        exResolveBtn.setAttribute("class", options.btnClassSuccess);
-        exResolveBtn.setAttribute("autofocus", "");
-        exResolveBtn.innerHTML = options.btnClassSuccessText;
-        exResolveBtn.addEventListener("click", (event) => {
-            exConfirmPromise.resolve();
-        });
-        // space between the buttons
-        let exBtnDivSpace = document.createTextNode(" ");
-
-        let exResolveBtn = document.createElement("button");
         exResolveBtn.setAttribute("id", "exConfirmPromiseBtnYes");
         exResolveBtn.setAttribute("style", "width: 62px;");
         exResolveBtn.setAttribute("class", options.btnClassSuccess);
@@ -78,6 +67,11 @@ let exConfirmPromise = {
         exResolveBtn.innerHTML = options.btnClassSuccessText;
         exResolveBtn.addEventListener("click", (event) => {
             exConfirmPromise.resolve();
+        });
+        exResolveBtn.addEventListener('keydown', (event) => {
+            if (event.key == "ArrowRight") {
+                document.querySelector("#exConfirmPromiseBtnNo").focus();
+            }
         });
         // space between the buttons
         let exBtnDivSpace = document.createTextNode(" ");
@@ -89,6 +83,11 @@ let exConfirmPromise = {
         exRejectBtn.innerHTML = options.btnClassFailText;
         exRejectBtn.addEventListener("click", (event) => {
             exConfirmPromise.reject();
+        });
+        exRejectBtn.addEventListener('keydown', (event) => {
+            if (event.key == "ArrowLeft") {
+                document.querySelector("#exConfirmPromiseBtnYes").focus();
+            }
         });
         //append inner html to body
         let exMainDiv = document.createElement("div");
