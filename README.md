@@ -33,6 +33,10 @@ var configOpt = {
     message : "Sample Query?"
 };
 exConfirmPromise.make(configOpt).then(function (userOption) {
-  alert(userOption);
+    alert(userOption);
+}).then(function () {
+    exConfirmPromise.make(configOpt).then(function (userOption) {
+        alert(userOption)
+    });
 });
 ```
