@@ -4,31 +4,35 @@
 * @version 1.0.1
 * @abstract To enable custom promise confirm box
 */
+
 let exConfirmPromise = {
     "options" : {
         zIndex: 9999, //Integer
         overlayBackground: "rgba(255,255,255,0)", //String [HEX, RGB, RGBA]
         bodyBackground: "rgba(255,255,255,1)", //String [HEX, RGB, RGBA]
-        titleBackground: "rgba(66, 139, 202, 1)", //String [HEX, RGB, RGBA]
+        bodyBorder: "2px solid #1c84ef", //String
+        titleBackground: "rgb(28, 132, 239)", //String [HEX, RGB, RGBA]
         textColor: "#000000", //String [HEX, RGB, RGBA]
         titleColor: "#ffffff", //String [HEX, RGB, RGBA]
         btnPosition: "right", //String [left, center, right]
-        top: "25%", //String [px, %]
+        top: "5%", //String [px, %]
         right: "38%", //String [px, %]
-        btnClassSuccess: "btn btn-success btn-sm", //String
+        btnClassSuccess: "btn btn-default btn-sm btn-sm-25px", //String
         btnClassSuccessText: "Yes", //String
-        btnClassFail: "btn btn-danger btn-sm", //String
+        btnClassFail: "btn btn-default btn-sm btn-sm-25px", //String
         btnClassFailText: "No", //String
         title: "Confirmation", //String
         message: "Confirmation Required!", //String
         animation: true, //Bool
-        animationTime: 500 //Integer
+        animationTime: 500 //Integer        
     },
-    "exConfirmPromiseVal": null,
-    "exConfirmPromiseInterval": null,
-    "make": function (optionsParam) {
-        if (document.querySelector("#exConfirmPromiseOverLay") != null)
-            return;
+    "confirmPromiseVal": null,
+    "confirmPromiseInterval": null,
+    "activeElement": null,
+    "fadeInInterval": null,
+    "fadeOutInterval": null,
+    "exitTimeout" : null,
+    "make": function (optionsParam) {        
         //setting default value        
         optionsParam = typeof optionsParam == "undefined" ? {} : optionsParam;
 
@@ -36,12 +40,13 @@ let exConfirmPromise = {
         exConfirmPromise.doReset(options);
 
         //prepare inner html
-        let htmlDiv = '<div id="exConfirmPromiseWrap" style="' +                                                
-                                                'background:' + options.bodyBackground + ';' +
+        let exPromiseWrap = document.createElement("div");
+        exPromiseWrap.setAttribute("id", "exConfirmPromiseWrap");
+        exPromiseWrap.setAttribute("style", 'background:' + options.bodyBackground + ';' +
                                                 'position: fixed;' +
                                                 'top: ' + options.top + ';' +
                                                 'right: ' + options.right + ';' +
-                                                'width:300px;' +
+                                                'width:342px;' +
                                                 'cursor: pointer;' +
                                                 'overflow: hidden;' +
                                                 '-webkit-box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.3);' +
@@ -51,13 +56,16 @@ let exConfirmPromise = {
                                                 '-wekbit-border-radius: 5px;' +
                                                 '-moz-border-radius: 5px;' +
                                                 '-o-border-radius: 5px;' +
-                                                'border-radius: 5px;' +
-                                                'z-index: ' + options.zIndex + ';">' +
-                       '<div id="exConfirmPromise_title" style="height: 26px;padding: 4px 0px 0px 10px;background:' + options.titleBackground + ';color:' + options.titleColor + ';">' + options.title + '</div>' +
-                       '<p style="text-align: left;padding: 10px;width: 100%;margin: 0;color:' + options.textColor + '">' + options.message + '</p>' +
-                       '<div id="exConfirmPromiseBtnWrap" style="padding: 10px;text-align: ' + options.btnPosition + ';">' +
-                       '</div>' +
-                   '</div>';
+                                                'border-radius: 3px;' +
+                                                'border:' + options.bodyBorder + ';' +
+                                                'z-index: ' + options.zIndex + ';');
+        exPromiseWrap.innerHTML = '<div id="exConfirmPromise_title" style="height: 26px;padding: 4px 0px 0px 10px;background:' + options.titleBackground + ';color:' + options.titleColor + '";">' + options.title + '</div>' +
+                       '<p style="text-align: left;padding: 16px 5px 0px 10px;width: 100%;margin: 0;font-size: 13px;color:' + options.textColor + '">' + options.message + '</p>';
+
+        let exPromiseWrapBtn = document.createElement("div");
+        exPromiseWrapBtn.setAttribute("id", "exConfirmPromiseBtnWrap");
+        exPromiseWrapBtn.setAttribute("style",'padding: 10px;text-align: ' + options.btnPosition + ';');                       
+                   
         // prepare button with click function
         let exResolveBtn = document.createElement("button");
         exResolveBtn.setAttribute("id", "exConfirmPromiseBtnYes");
@@ -68,11 +76,7 @@ let exConfirmPromise = {
         exResolveBtn.addEventListener("click", (event) => {
             exConfirmPromise.resolve();
         });
-        exResolveBtn.addEventListener('keydown', (event) => {
-            if (event.key == "ArrowRight") {
-                document.querySelector("#exConfirmPromiseBtnNo").focus();
-            }
-        });
+        
         // space between the buttons
         let exBtnDivSpace = document.createTextNode(" ");
 
@@ -84,50 +88,71 @@ let exConfirmPromise = {
         exRejectBtn.addEventListener("click", (event) => {
             exConfirmPromise.reject();
         });
-        exRejectBtn.addEventListener('keydown', (event) => {
-            if (event.key == "ArrowLeft") {
-                document.querySelector("#exConfirmPromiseBtnYes").focus();
+
+        //arrow function
+        exResolveBtn.addEventListener('keydown', (event) => {
+            if (event.key == "ArrowRight") {
+                exRejectBtn.focus();
             }
         });
+        exRejectBtn.addEventListener('keydown', (event) => {
+            if (event.key == "ArrowLeft") {
+                exResolveBtn.focus();
+            }
+        });
+        //append buttons
+        exPromiseWrapBtn.appendChild(exResolveBtn);
+        exPromiseWrapBtn.appendChild(exBtnDivSpace);
+        exPromiseWrapBtn.appendChild(exRejectBtn);
+        //append button wrap
+        exPromiseWrap.appendChild(exPromiseWrapBtn);
         //append inner html to body
         let exMainDiv = document.createElement("div");
         exMainDiv.setAttribute("id", "exConfirmPromiseOverLay");
         exMainDiv.setAttribute("style", "position:fixed;top:0;left:0;width:100%;height:100%;z-index:" + (options.zIndex - 1) + ";background:" + options.overlayBackground + ";");
-        exMainDiv.innerHTML = htmlDiv;
+        exMainDiv.appendChild(exPromiseWrap);
         document.querySelector("body").appendChild(exMainDiv);
-        //append buttons
-        document.querySelector("#exConfirmPromiseBtnWrap").appendChild(exResolveBtn);
-        document.querySelector("#exConfirmPromiseBtnWrap").appendChild(exBtnDivSpace);
-        document.querySelector("#exConfirmPromiseBtnWrap").appendChild(exRejectBtn);
-        document.querySelector("#exConfirmPromiseBtnYes").focus();
+        //backup current active element
+        this.activeElement = document.activeElement;
+        exResolveBtn.focus();
+        //check animation config
         if (options.animation) {
-            document.querySelector("#exConfirmPromiseWrap").style.display = "none";
-            this.fadeIn(document.querySelector('#exConfirmPromiseWrap'), options.animationTime);
+            exPromiseWrap.style.display = "none";
+            this.fadeIn(exPromiseWrap, options.animationTime);
         }
             
         //return promise
         return new Promise((resolve, reject) => {
-            exConfirmPromise.exConfirmPromiseInterval = setInterval(function () {
-                if (exConfirmPromise.exConfirmPromiseVal === true) {
+            exConfirmPromise.confirmPromiseInterval = setInterval(function() {
+                if (exConfirmPromise.confirmPromiseVal === true) {
                     exConfirmPromise.doReset(options);
                     resolve(true);
-                } else if (exConfirmPromise.exConfirmPromiseVal === false) {
+                } else if (exConfirmPromise.confirmPromiseVal === false) {
                     exConfirmPromise.doReset(options);
                     resolve(false);
                 }
             });
-        })
+        });
     },
     "resolve": function () {
-        this.exConfirmPromiseVal = true;
+        this.confirmPromiseVal = true;
     },
     "reject": function () {
-        this.exConfirmPromiseVal = false;
+        this.confirmPromiseVal = false;
     },
     "doReset": function (options) {
-        if (options.animation && this.exConfirmPromiseVal != null) {            
+        if (this.exitTimeout)
+            clearTimeout(this.exitTimeout);
+
+        if (this.fadeInInterval)
+            clearInterval(this.fadeInInterval);
+
+        if (this.fadeOutInterval)
+            clearInterval(this.fadeOutInterval);
+
+        if (options.animation && this.confirmPromiseVal != null) {            
             this.fadeOut(document.querySelector('#exConfirmPromiseWrap'), options.animationTime);
-            setTimeout(function () {
+            this.exitTimeout = setTimeout(function () {
                 if (document.querySelector("#exConfirmPromiseOverLay") != null) {
                     document.querySelector("#exConfirmPromiseOverLay").remove();
                 }
@@ -137,10 +162,16 @@ let exConfirmPromise = {
                 document.querySelector("#exConfirmPromiseOverLay").remove();
             }
         }
-        if (this.exConfirmPromiseInterval) {
-            clearInterval(this.exConfirmPromiseInterval);
+        if (this.confirmPromiseInterval) {
+            clearInterval(this.confirmPromiseInterval);
         }
-        this.exConfirmPromiseVal = null;
+        
+        this.confirmPromiseVal = null;
+
+        if (this.activeElement) {
+            this.activeElement.focus();
+            this.activeElement = null;
+        }            
     },    
     "fadeIn": function (element, duration) {        
         element.style.display = "initial";
@@ -148,9 +179,9 @@ let exConfirmPromise = {
         
         let optI = (10 / duration);
         let opt = optI;
-        optInt = setInterval(function () {
+        this.fadeInInterval = setInterval(function () {
             if (opt >= 1)
-                clearInterval(optInt);
+                clearInterval(this.fadeInInterval);
 
             element.style.opacity = opt;
             opt = opt + optI;
@@ -162,9 +193,9 @@ let exConfirmPromise = {
 
         let optI = (10 / duration);
         let opt = 1;
-        optInt = setInterval(function () {
+        this.fadeOutInterval = setInterval(function () {
             if (opt <= 0)
-                clearInterval(optInt);
+                clearInterval(this.fadeOutInterval);
 
             element.style.opacity = opt;
             opt = opt - optI;
@@ -178,3 +209,4 @@ document.addEventListener('keydown', (event) => {
         exConfirmPromise.doReset(exConfirmPromise.options);
     }
 });
+
