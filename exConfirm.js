@@ -211,8 +211,7 @@ let exConfirmPromise = {
 }
 // add Escape/Enter/Space key function to enable only
 document.addEventListener('keydown', (event) => {
-    if (document.querySelector("#exConfirmPromiseOverLay") != null) {
-        console.log(event.key);
+    if (document.querySelector("#exConfirmPromiseOverLay") != null) {        
         if (event.key == "Escape") {
             exConfirmPromise.doReset(exConfirmPromise.options);
         } else if (event.key != "Enter" && event.key != " ") {
