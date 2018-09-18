@@ -128,6 +128,7 @@ let exConfirmPromise = {
         //return promise
         return new Promise((resolve, reject) => {
             exConfirmPromise.confirmPromiseInterval = setInterval(function() {
+                exConfirmPromise.activeButton.focus();
                 if (exConfirmPromise.confirmPromiseVal === true) {
                     exConfirmPromise.doReset(options);
                     resolve(true);
