@@ -29,6 +29,7 @@ let exConfirmPromise = {
     "confirmPromiseVal": null,
     "confirmPromiseInterval": null,
     "activeElement": null,
+    "activeButton" : null,
     "fadeInInterval": null,
     "fadeOutInterval": null,
     "exitTimeout" : null,
@@ -92,11 +93,13 @@ let exConfirmPromise = {
         //arrow function
         exResolveBtn.addEventListener('keydown', (event) => {
             if (event.key == "ArrowRight") {
+                this.activeButton = exRejectBtn;
                 exRejectBtn.focus();
             }
         });
         exRejectBtn.addEventListener('keydown', (event) => {
             if (event.key == "ArrowLeft") {
+                this.activeButton = exResolveBtn;
                 exResolveBtn.focus();
             }
         });
@@ -115,6 +118,7 @@ let exConfirmPromise = {
         //backup current active element
         this.activeElement = document.activeElement;
         exResolveBtn.focus();
+        this.activeButton = exResolveBtn;
         //check animation config
         if (options.animation) {
             exPromiseWrap.style.display = "none";
@@ -131,7 +135,7 @@ let exConfirmPromise = {
                     exConfirmPromise.doReset(options);
                     resolve(false);
                 }
-            });
+            });            
         });
     },
     "resolve": function () {
@@ -171,7 +175,9 @@ let exConfirmPromise = {
         if (this.activeElement) {
             this.activeElement.focus();
             this.activeElement = null;
-        }            
+        }
+
+        this.activeButton = null;
     },    
     "fadeIn": function (element, duration) {        
         element.style.display = "initial";
@@ -207,6 +213,13 @@ let exConfirmPromise = {
 document.addEventListener('keydown', (event) => {
     if (event.key == "Escape") {
         exConfirmPromise.doReset(exConfirmPromise.options);
+    }
+});
+// disable other focus during active window
+document.addEventListener('click', (event) => {
+    if (document.querySelector("#exConfirmPromiseOverLay") != null) {        
+        if (!event.target.isEqualNode(document.querySelector("#exConfirmPromiseBtnYes")) || !event.target.isEqualNode(document.querySelector("#exConfirmPromiseBtnNo")))
+            exConfirmPromise.activeButton.focus();        
     }
 });
 
