@@ -209,10 +209,16 @@ let exConfirmPromise = {
         element.style.display = "initial";
     }
 }
-// add Escape key function to exit confirm
+// add Escape/Enter/Space key function to enable only
 document.addEventListener('keydown', (event) => {
-    if (event.key == "Escape") {
-        exConfirmPromise.doReset(exConfirmPromise.options);
+    if (document.querySelector("#exConfirmPromiseOverLay") != null) {
+        console.log(event.key);
+        if (event.key == "Escape") {
+            exConfirmPromise.doReset(exConfirmPromise.options);
+        } else if (event.key != "Enter" && event.key != " ") {
+            event.preventDefault();
+            event.stopPropagation();
+        }
     }
 });
 // disable other focus during active window
