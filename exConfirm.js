@@ -17,9 +17,9 @@ let exConfirmPromise = {
         btnPosition: "right", //String [left, center, right]
         top: "5%", //String [px, %]
         right: "38%", //String [px, %]
-        btnClassSuccess: "btn btn-default btn-sm btn-sm-25px", //String
+        btnClassSuccess: "btn btn-default btn-sm", //String
         btnClassSuccessText: "Yes", //String
-        btnClassFail: "btn btn-default btn-sm btn-sm-25px", //String
+        btnClassFail: "btn btn-default btn-sm", //String
         btnClassFailText: "No", //String
         title: "Confirmation", //String
         message: "Confirmation Required!", //String
@@ -70,7 +70,7 @@ let exConfirmPromise = {
         // prepare button with click function
         let exResolveBtn = document.createElement("button");
         exResolveBtn.setAttribute("id", "exConfirmPromiseBtnYes");
-        exResolveBtn.setAttribute("style", "width: 62px;");
+        exResolveBtn.setAttribute("style", "min-width: 62px;");
         exResolveBtn.setAttribute("class", options.btnClassSuccess);
         exResolveBtn.setAttribute("autofocus", "");
         exResolveBtn.innerHTML = options.btnClassSuccessText;
@@ -83,7 +83,7 @@ let exConfirmPromise = {
 
         let exRejectBtn = document.createElement("button");
         exRejectBtn.setAttribute("id", "exConfirmPromiseBtnNo");
-        exRejectBtn.setAttribute("style", "width: 62px;");
+        exRejectBtn.setAttribute("style", "min-width: 62px;");
         exRejectBtn.setAttribute("class", options.btnClassFail);
         exRejectBtn.innerHTML = options.btnClassFailText;
         exRejectBtn.addEventListener("click", (event) => {
