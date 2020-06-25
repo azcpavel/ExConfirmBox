@@ -1,7 +1,7 @@
 /*
 * @author Ahsan Zahid Chowdhury <itszahid.info>
 * @since 12th September 2018
-* @version 1.0.1
+* @version 1.0.2
 * @abstract To enable custom promise confirm box
 */
 
@@ -17,14 +17,21 @@ let exConfirmPromise = {
         btnPosition: "right", //String [left, center, right]
         top: "5%", //String [px, %]
         right: "38%", //String [px, %]
-        btnClassSuccess: "btn btn-default btn-sm", //String
+        btnClassSuccess: "btn btn-success btn-sm", //String
         btnClassSuccessText: "Yes", //String
-        btnClassFail: "btn btn-default btn-sm", //String
+        btnClassFail: "btn btn-danger btn-sm", //String
         btnClassFailText: "No", //String
         title: "Confirmation", //String
         message: "Confirmation Required!", //String
         animation: true, //Bool
-        animationTime: 500 //Integer        
+        animationTime: 500, //Integer
+        disableForceFocus : false, //Bool
+        onResolve : function(){ //Function
+
+        },
+        onReject : function(){ //Function
+
+        },        
     },
     "confirmPromiseVal": null,
     "confirmPromiseInterval": null,
@@ -128,7 +135,8 @@ let exConfirmPromise = {
         //return promise
         return new Promise((resolve, reject) => {
             exConfirmPromise.confirmPromiseInterval = setInterval(function() {
-                exConfirmPromise.activeButton.focus();
+                if(!exConfirmPromise.options.disableForceFocus)
+                    exConfirmPromise.activeButton.focus();
                 if (exConfirmPromise.confirmPromiseVal === true) {
                     exConfirmPromise.doReset(options);
                     resolve(true);
@@ -140,9 +148,11 @@ let exConfirmPromise = {
         });
     },
     "resolve": function () {
+        this.onResolve();
         this.confirmPromiseVal = true;
     },
     "reject": function () {
+        this.onReject();
         this.confirmPromiseVal = false;
     },
     "doReset": function (options) {
@@ -179,7 +189,14 @@ let exConfirmPromise = {
         }
 
         this.activeButton = null;
-    },    
+
+        this.onResolve = options.onResolve;
+        this.onReject = options.onReject;
+    },
+    "onResolve": function () {
+    },
+    "onReject": function () {
+    },
     "fadeIn": function (element, duration) {        
         element.style.display = "initial";
         element.style.opacity = "0";
@@ -213,7 +230,10 @@ let exConfirmPromise = {
 // add Escape/Enter/Space key function to enable only
 document.addEventListener('keydown', (event) => {
     if (document.querySelector("#exConfirmPromiseOverLay") != null) {        
-        if (event.key == "Escape") {
+        if(exConfirmPromise.options.disableForceFocus){
+            //allow keyboard
+        }
+        else if (event.key == "Escape") {
             exConfirmPromise.doReset(exConfirmPromise.options);
         } else if (event.key != "Enter" && event.key != " ") {
             event.preventDefault();
@@ -224,8 +244,7 @@ document.addEventListener('keydown', (event) => {
 // disable other focus during active window
 document.addEventListener('click', (event) => {
     if (document.querySelector("#exConfirmPromiseOverLay") != null) {        
-        if (!event.target.isEqualNode(document.querySelector("#exConfirmPromiseBtnYes")) || !event.target.isEqualNode(document.querySelector("#exConfirmPromiseBtnNo")))
+        if (!exConfirmPromise.options.disableForceFocus && (!event.target.isEqualNode(document.querySelector("#exConfirmPromiseBtnYes")) || !event.target.isEqualNode(document.querySelector("#exConfirmPromiseBtnNo"))))
             exConfirmPromise.activeButton.focus();        
     }
 });
-
