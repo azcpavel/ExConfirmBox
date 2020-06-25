@@ -25,7 +25,14 @@ Default Options
     title: "Confirmation", //String
     message: "Confirmation Required!", //String
     animation: true, //Bool
-    animationTime: 500 //Integer  
+    animationTime: 500, //Integer
+    disableForceFocus : false, //Bool
+    onResolve : function(){ //Function
+
+    },
+    onReject : function(){ //Function
+
+    },   
 }
 
 var configOpt = {
